@@ -1,0 +1,51 @@
+<?php
+/* ############################################ */
+/* ####### CODED BY RONAN SARBON 04/2023 ###### */	
+/* ############################################ */
+include '../../../init.php';
+$db = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);	
+$functions = new PageFunctions;
+
+$username = $_SESSION['md_username'];
+$md_userlevel = $_SESSION['md_userlevel'];
+$module = $_POST['module'];
+$md_application = $_SESSION['md_application'];
+$date = date("Y-m-d H:i:s");
+$new_dl_count = 0;
+$fileko = $_POST['filename'];
+
+
+$ext = explode('.', $fileko);
+$extension = end($ext);
+$extension = strtolower($extension);
+$file = pathinfo($fileko, PATHINFO_FILENAME);
+$filename = $file.".".$extension;
+
+$path = str_replace("../", "", $_POST['fullpath']);
+$fullpath = $_SERVER['DOCUMENT_ROOT']."/".$path;
+$files = array($fullpath);
+$zip = new ZipArchive();
+$tmp_file = tempnam('../../../tmp','');
+$zip->open($tmp_file, ZipArchive::CREATE);
+
+foreach($files as $file)
+{
+    $download_file = file_get_contents($fullpath);
+    $zip->addFromString(basename($file),$download_file);
+}
+$zip->close();
+$url = "http://".$_SERVER['SERVER_NAME'];
+rename($tmp_file, $_SERVER['DOCUMENT_ROOT']."/tmp/".$filename.".zip") ;
+$fn = $url."/tmp/".$filename.".zip";
+echo $functions->ExecuteAccess($md_application,$module,$filename,$date,$db);
+$new_dl_count = ($functions->GeDownloadCount($filename,'downloaded_count',$db) + 1);
+$queryDataUpdate = "UPDATE tbl_document_properties SET downloaded_count='$new_dl_count' WHERE username='$username' AND file_name='$filename' ";
+if ($db->query($queryDataUpdate) === TRUE) {
+	echo $functions->ExecuteAccess($md_application,$module,$filename,$date,$db);
+} else { echo $db->error; }
+print_r('
+	<script>
+		window.location.href="'.$fn.'";
+		closeModal("formmodal");
+	</script>
+');

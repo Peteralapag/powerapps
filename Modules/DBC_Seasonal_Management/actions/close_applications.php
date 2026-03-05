@@ -1,0 +1,20 @@
+<?php
+session_start();
+unset($_SESSION["dbc_seasonal_username"]);
+unset($_SESSION["dbc_seasonal_company"]);
+unset($_SESSION["dbc_seasonal_appnameuser"]);
+unset($_SESSION["dbc_seasonal_userlevel"]);
+unset($_SESSION["dbc_seasonal_userrole"]);
+unset($_SESSION["dbc_seasonal_application"]);
+unset($_SESSION["dbc_seasonal_user_recipient"]);
+unset($_SESSION["DBC_SEASONAL_REPORT_PAGE"]);
+unset($_SESSION["DBC_SEASONAL_RECIPIENT_REPORT"]);
+print_r('
+	<script>
+		sessionStorage.removeItem("module");
+		sessionStorage.removeItem("navfds");
+		sessionStorage.removeItem("page_name");		
+		window.location.reload();
+	</script>
+');
+?>

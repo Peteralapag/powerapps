@@ -1,0 +1,154 @@
+<?php
+include '../../../init.php';
+$db = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);	
+if(isset($_POST['mode']))
+{
+	$mode = $_POST['mode'];
+} else {
+	print_r('
+		<script>
+			app_alert("Warning"," The Mode you are trying to pass does not exist","warning","Ok","","no");
+		</script>
+	');
+	exit();
+}
+if($mode=='captchaGenerate'){
+	$str_result = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$result = substr(str_shuffle($str_result),0 , 6);
+	echo $result;
+}
+if($mode=='idcodeSearch'){
+	$idcode = $_POST['idcode'];	
+
+	$sql = "SELECT firstname,lastname,branch,cluster,company,department,idcode FROM tbl_employees WHERE idcode='$idcode'";
+	$result = $db->query($sql);
+	
+	if ($result->num_rows > 0)
+	{
+		while($row = $result->fetch_assoc())
+	  	{
+	  		$idcode = $row['idcode'];
+	   		$firstname = $row['firstname'];
+	   		$lastname = $row['lastname'];
+	   		$branch = $row['branch'];
+	   		$cluster = $row['cluster'];
+	   		$company = $row['company'];
+	   		$department = $row['department'];
+	   		$user = $_SESSION['application_username'];
+	   		print_r('
+	   			<script>
+	   				$("#idcode").val("'.$idcode.'");
+	   				$("#firstname").val("'.$firstname.'");
+	   				$("#lastname").val("'.$lastname.'");
+	   				$("#branch").val("'.$branch.'");
+	   				$("#company").val("'.$company.'");
+	   				$("#cluster").val("'.$cluster.'");
+	   				$("#company").val("'.$company.'");
+	   				$("#department").val("'.$department.'");
+					$("#username").val("'.ucwords($user).'");
+
+	   			</script>
+	   		');
+		}
+	} 
+	else
+	{
+		print_r('
+   			<script>
+   				$("#firstname").val("");
+	   				$("#lastname").val("");
+	   				$("#branch").val("");
+	   				$("#cluster").val("");
+	   				$("#company").val("");
+	   				$("#department").val("");
+					app_alert("Warning","IDCODE does not exist","warning","Ok","","no");
+   			</script>
+   		');
+	}
+	
+}
+if($mode=='register')
+{
+	$idcode = $_POST['idcode'];
+	$firstname = $_POST['firstname'];
+	$lastname = $_POST['lastname'];
+	$username = $_POST['username'];
+	$branch = $_POST['branch'];
+	$cluster = $_POST['cluster'];
+	$department = $_POST['department'];
+	$company = $_POST['company'];
+	$acctname = $firstname.' '.$lastname;
+	
+	
+	if(CheckIdcodeExist($idcode,$db) == '1') {
+		
+		echo '<script>app_alert("Warning","IDCODE already DBC Seasonal registered","warning","Ok","","no");</script>';
+		exit();
+	}
+	
+	branchOrderingMain($idcode,$acctname,$username,$db);
+	branchOrderingCreateOrder($idcode,$acctname,$username,$db);
+	branchOrderingCreateRequest($idcode,$acctname,$username,$db);
+	branchOrderingOrderTracking($idcode,$acctname,$username,$db);
+	branchOrderingMyOrder($idcode,$acctname,$username,$db);	
+	
+	print_r('
+			<script>
+				app_alert("Success","Registration Successful","success","Ok","username","registersuccess");
+				$("#formmodal").fadeOut();
+			</script>
+		');	
+}
+function CheckIdcodeExist($idcode,$db)
+{
+	$query = "SELECT * FROM tbl_system_permission WHERE idcode='$idcode' AND applications='DBC Seasonal Branch Ordering System' AND modules='Main'";
+	$results = mysqli_query($db, $query);    
+	if ( $results->num_rows > 0 ) 
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}	
+}
+function branchOrderingMain($idcode,$acctname,$username,$db){
+	$sqlInsert = "INSERT INTO tbl_system_permission (`idcode`,`acctname`,`username`,`userlevel`,`applications`,`modules`,`p_view`)";
+	$sqlInsert .= "VALUES('$idcode','$acctname','$username','10','DBC Seasonal Branch Ordering System','Main','1')";
+	$result=$db->query($sqlInsert);
+	if ($result === TRUE){}else{}
+}
+function branchOrderingCreateOrder($idcode,$acctname,$username,$db){
+	$sqlInsert = "INSERT INTO tbl_system_permission (`idcode`,`acctname`,`username`,`userlevel`,`applications`,`modules`,`p_view`,`p_read`,`p_add`,`p_write`,`p_edit`,`p_delete`,`p_update`)";
+	$sqlInsert .= "VALUES('$idcode','$acctname','$username','10','DBC Seasonal Branch Ordering System','Create Order','1','1','1','1','1','1','1')";
+	$result=$db->query($sqlInsert);
+	if ($result === TRUE){}else{}
+}
+function branchOrderingCreateRequest($idcode,$acctname,$username,$db){
+	$sqlInsert = "INSERT INTO tbl_system_permission (`idcode`,`acctname`,`username`,`userlevel`,`applications`,`modules`,`p_view`,`p_read`,`p_add`,`p_write`,`p_edit`,`p_delete`,`p_update`)";
+	$sqlInsert .= "VALUES('$idcode','$acctname','$username','10','DBC Seasonal Branch Ordering System','Create Request','1','1','1','1','1','1','1')";
+	$result=$db->query($sqlInsert);
+	if ($result === TRUE){}else{}
+}
+function branchOrderingOrderTracking($idcode,$acctname,$username,$db){
+	$sqlInsert = "INSERT INTO tbl_system_permission (`idcode`,`acctname`,`username`,`userlevel`,`applications`,`modules`,`p_view`)";
+	$sqlInsert .= "VALUES('$idcode','$acctname','$username','10','DBC Seasonal Branch Ordering System','Order Tracking','1')";
+	$result=$db->query($sqlInsert);
+	if ($result === TRUE){}else{}
+}
+function branchOrderingMyOrder($idcode,$acctname,$username,$db){
+	$sqlInsert = "INSERT INTO tbl_system_permission (`idcode`,`acctname`,`username`,`userlevel`,`applications`,`modules`,`p_view`)";
+	$sqlInsert .= "VALUES('$idcode','$acctname','$username','10','DBC Seasonal Branch Ordering System','My Orders','1')";
+	$result=$db->query($sqlInsert);
+	if ($result === TRUE){}else{}
+}
+function encryptedPassword($password,$db)
+{		
+	$asin_ang_ulam = "DevelopedAndCodedByRonanSarbon";
+	$password_enc = $encrypted_string=openssl_encrypt($password,"AES-256-ECB",$asin_ang_ulam);
+	$strHashedPass = mysqli_real_escape_string($db, $password_enc);	
+	$strHash = hash( 'sha256', $strHashedPass);
+	return $strHash;
+}
+
+

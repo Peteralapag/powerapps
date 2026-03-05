@@ -1,0 +1,89 @@
+﻿:root {
+	--main-color: #383838;
+	--color-dark: #1D22231;
+	--text-grey: #8390A2;
+    --hover-color: #DD2F6E;
+    --sidebar-text-color: #FFFFFF;
+	--dodger-color: dodgerblue;
+	--background-warning: #fad8d7;
+	--thheader-orange: #dc7d4c;
+	--thheader-green: #D76A31;
+}
+.color-orange { color:orange; }
+.color-red { color: #f76265; }
+.color-blue { color: blue; }
+.color-white { color: #fff; }
+.color-silver { color: silver; }
+.color-green { color: green; }
+.color-pink { color: hotpink; }
+.color-gold { color: gold; }
+.color-teal { color: teal; }
+.color-dodger { color: dodgerblue; }
+.color-olive { color: olive; }
+.color-warning { color: #fad8d7; }
+.color-lime { color: lime; }
+.color-yellow { color: orange; }
+html, body {
+	background:#f4f6f9;
+	background-size: cover;
+	background-position: center;
+	height:100vh;
+	overflow:hidden;
+	padding: 0;
+	margin:0;
+}
+* {
+	box-sizing: border-box;
+	list-style-type: none;
+	text-decoration: none;
+	font-family:Verdana, Geneva, Tahoma, sans-serif
+}
+header {position: fixed;background:#fff;justify-content: space-between;width:100%;top: 0;z-index: 999}
+header ul {position:relative;list-style-type:none;margin:0;padding:0;background:#fff;color:#232323;border-bottom:2px solid #e7e7e7;}
+header li {display:inline-block;padding:10px 20px 10px 20px;font-size:18px;cursor:pointer;border-right:1px solid #dddddd;}
+header li:last-child {padding-right:12px;}
+header:first-child {border:0;}
+header .profile {float:right;}
+header .profile-hover:hover {background:#dbe3ec;}
+header .settings {text-align:center;width:60px;}
+.footer-text {width:100%;text-align:center;bottom:0px;font-size:0.6rem; padding:0.5rem; background: #f1f1f1; border-top:2px solid #e7e7e7 }
+.header-downdownmenu-wrapper {position:absolute;top:60px;right:5px;display:none;background:#fff;width:280px;text-align:left;
+border-radius:5px;box-shadow: 0 2px 8px rgba(0,0,0,.3);
+	overflow-y: auto;
+	-webkit-box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+.header-main-downdownmenu-wrapper {position:absolute;top:60px;display:none;background:#fff;width:390px;z-index:20;text-align:left;border-radius:5px;
+-webkit-box-shadow: 0 3px 9px rgba(0,0,0,.5);box-shadow: 0 3px 9px rgba(0,0,0,.5);overflow-y:auto; z-index:3}
+.main-content { overflow:hidden;}
+.main {margin-top: 50px;height: calc(100vh - 85px);overflow: hidden; display: flex; z-index:2;}
+/* ########################### DROP DOWN ########################## */
+.dropdown-wrapper ul {display:flex;flex-direction:column; flex:1;position:relative;height:200px;}
+.dropdown-wrapper li {gap: 10px;display: inline-block;width:100%;border-bottom:1px solid #e7e7e7;font-size:16px;}
+.dropdown-wrapper li span {margin-right:20px;}
+.dropdown-wrapper li:last-child {margin-top:auto;border-bottom:0;border-top:1px solid #e7e7e7;align-self: flex-end;}
+.dropdown-wrapper li:hover {background:#dbe3ec}
+/* ########################### CHECKBOX SWITCH ########################## */
+.switch {position: relative;display: inline-block;width: 45px;height: 26px;}
+.switch input { opacity: 0;width: 0;height: 0;}
+.slider {position: absolute;cursor: pointer;top: 0;left: 0;right: 0;bottom: 0;background-color: #ccc;-webkit-transition: .4s;transition: .4s;}
+.slider:before {position: absolute;content: "";height: 18px;width: 12px;left: 4px;bottom: 4px;background-color: white;-webkit-transition: .4s;transition: .4s;}
+input:checked + .slider {background-color: #2196F3;}
+input:focus + .slider {box-shadow: 0 0 1px #2196F3;}
+input:checked + .slider:before {-webkit-transform: translateX(26px);-ms-transform: translateX(26px);transform: translateX(26px);}
+/* Rounded sliders */
+.slider.round {border-radius: 34px;}
+.slider.round:before {border-radius: 50%;}
+
+/* #################### SEARCH WRAPPER ############################ */
+.search-wrapper { display:flex;float:left;width:100%;margin-top:5px;}
+.search-wrapper button {width:70px}
+.search-box {
+	position:absolute;background:#fff;display:none;width:100%;top:40px;border-radius:0px 0px 10px 10px;border:1px solid #aeaeae;overflow:hidden;overflow-y:auto;
+	height:calc(100vh - 330px);
+	box-shadow: 2px 4px 8px 0px rgba(59, 113, 202, 0.54);
+}
+.users-data {margin-top:20px;}
+.searchlist li {padding:10px 10px 10px 0px;cursor:pointer;border-bottom:1px solid #f1f1f1;}
+.searchlist li:hover {background:#aeaeae;color:#333;}
+.searchlist:last-child {border-bottom:0;}
+

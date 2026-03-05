@@ -1,0 +1,75 @@
+<?php
+include '../../../init.php';
+$db = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+require_once($_SERVER['DOCUMENT_ROOT']."/Modules/Frozen_Dough_Management/class/Class.functions.php");
+$function = new FDSFunctions;
+$app_user = $_SESSION['fds_username'];
+$date_user = date("Y-m-d H:i:s");
+$control_no = $_POST['control_no'];
+	$queryChk = "SELECT * FROM fds_picklist WHERE control_no='$control_no'";
+	$queryChk = "SELECT * FROM fds_picklist PL
+		INNER JOIN fds_branch_order BO
+		ON BO.item_code = PL.item_code
+		WHERE PL.control_no='$control_no'
+	";
+	$chkResult = mysqli_query($db, $queryChk);
+
+	if (mysqli_num_rows($chkResult) > 0)
+	{
+		print_r('
+			<script>
+				swal("Warning","Pick lists already save to Pick lists", "warning");
+			</script>
+		');
+	} else {
+		$query = "SELECT * FROM fds_branch_order WHERE control_no='$control_no'";
+		$result = mysqli_query($db, $query);
+		if (mysqli_num_rows($result) > 0) {
+			$data = array();
+		    while ($row = mysqli_fetch_assoc($result))
+		    {			    
+	   	       $control_no = $row['control_no'];
+	   	       $item_code = $row['item_code'];
+		       $item_description = $row['item_description'];
+		       $quantity = $row['quantity'];
+		       $uom = $row['uom'];
+		       $trans_date = $row['trans_date'];
+		       $branch = $row['branch'];
+		       array_push($data, ['branch'=>$branch,'control_no'=>$control_no,'item_code'=>$item_code,'item_description'=>$item_description,'quantity'=>$quantity,'uom'=>$uom,'trans_date'=>$trans_date]);		       
+		    }
+		    saveToPickList($data,$function,$date_user,$app_user,$db);
+		} else {
+		    echo 'No rows found.';
+		}
+	}
+
+function saveToPickList($data,$function,$date_user,$app_user,$db)
+{
+	for($i = 0; $i < count($data); $i++)
+	{
+		$branch = $data[$i]['branch'];
+		$control_no = $data[$i]['control_no'];
+		$itemname = $data[$i]['item_description'];
+		$quantity = $data[$i]['quantity'];
+		$uom = $data[$i]['uom'];
+		$trans_date = $data[$i]['trans_date'];
+		$column = "`branch`,`control_no`,`item_description`,`quantity`,`uom`,`trans_date`";
+		$insert = "'$branch','$control_no','$itemname','$quantity','$uom','$trans_date'";
+		$queryInsert = "INSERT INTO fds_picklist ($column) VALUES ($insert)";
+		if ($db->query($queryInsert) === TRUE)
+		{	
+			$log_msg = 'Pick lists saved';
+			print_r('
+				<script>
+					swal("Success","'.$log_msg.'", "success");
+				</script>
+			');
+		} else {
+			$log_msg = "Pick Lists Error: ".$db->error;
+			echo $db->error;
+		}		
+	}
+	echo $function->DoAuditLogs($date_user,$log_msg,$app_user,$db);	
+}	
+mysqli_close($db);
+?>

@@ -1,0 +1,20 @@
+<?php
+session_start();
+unset($_SESSION["binalot_username"]);
+unset($_SESSION["binalot_company"]);
+unset($_SESSION["binalot_appnameuser"]);
+unset($_SESSION["binalot_userlevel"]);
+unset($_SESSION["binalot_userrole"]);
+unset($_SESSION["binalot_application"]);
+unset($_SESSION["binalot_user_recipient"]);
+unset($_SESSION["BINALOT_REPORT_PAGE"]);
+unset($_SESSION["BINALOT_RECIPIENT_REPORT"]);
+print_r('
+	<script>
+		sessionStorage.removeItem("module");
+		sessionStorage.removeItem("navfds");
+		sessionStorage.removeItem("page_name");		
+		window.location.reload();
+	</script>
+');
+?>

@@ -1,0 +1,20 @@
+<?php
+session_start();
+unset($_SESSION["dbc_username"]);
+unset($_SESSION["dbc_company"]);
+unset($_SESSION["dbc_appnameuser"]);
+unset($_SESSION["dbc_userlevel"]);
+unset($_SESSION["dbc_userrole"]);
+unset($_SESSION["dbc_application"]);
+unset($_SESSION["dbc_user_recipient"]);
+unset($_SESSION["DBC_REPORT_PAGE"]);
+unset($_SESSION["DBC_RECIPIENT_REPORT"]);
+print_r('
+	<script>
+		sessionStorage.removeItem("module");
+		sessionStorage.removeItem("navfds");
+		sessionStorage.removeItem("page_name");		
+		window.location.reload();
+	</script>
+');
+?>

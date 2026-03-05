@@ -1,0 +1,20 @@
+<?php
+session_start();
+unset($_SESSION["fds_username"]);
+unset($_SESSION["fds_company"]);
+unset($_SESSION["fds_appnameuser"]);
+unset($_SESSION["fds_userlevel"]);
+unset($_SESSION["fds_userrole"]);
+unset($_SESSION["fds_application"]);
+unset($_SESSION["fds_user_recipient"]);
+unset($_SESSION["FDS_REPORT_PAGE"]);
+unset($_SESSION["FDS_RECIPIENT_REPORT"]);
+print_r('
+	<script>
+		sessionStorage.removeItem("module");
+		sessionStorage.removeItem("navfds");
+		sessionStorage.removeItem("page_name");		
+		window.location.reload();
+	</script>
+');
+?>
