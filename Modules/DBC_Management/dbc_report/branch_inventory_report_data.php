@@ -56,7 +56,7 @@ $ddate = $year."-".$month;
 	</thead>
 	<tbody>
 <?php
-	$sqlQuery = "SELECT * FROM dbc_itemlist WHERE recipient='$recipient'";
+	$sqlQuery = "SELECT * FROM wms_itemlist WHERE recipient='$recipient'";
 	$results = mysqli_query($db, $sqlQuery);
 	if ($results->num_rows > 0) {
     $i = 0;

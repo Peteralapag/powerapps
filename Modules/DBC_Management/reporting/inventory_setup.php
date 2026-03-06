@@ -46,7 +46,7 @@ if(isset($_POST['location']) && $_POST['location']!='')
 		</thead>
 		<tbody>
 <?php
-	$queryItems = "SELECT * FROM dbc_itemlist WHERE $q active=1";
+	$queryItems = "SELECT * FROM wms_itemlist WHERE $q active=1";
 	$resultsItems = $db->query($queryItems);			
 	$j=0;
 	while($ITEMROWS = mysqli_fetch_array($resultsItems))  

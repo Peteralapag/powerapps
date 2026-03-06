@@ -95,7 +95,7 @@ $delivery_day = date("d", strtotime($function->getDeliveryDate($control_no,$db))
 		$sqlQuery = "
 		    SELECT dbo.*, dil.ordered 
 		    FROM dbc_branch_order dbo
-		    INNER JOIN dbc_itemlist dil ON dbo.item_code = dil.item_code
+		    INNER JOIN wms_itemlist dil ON dbo.item_code = dil.item_code
 		    WHERE dbo.control_no = '$control_no' AND dbo.cancelled = 0 AND dbo.quantity <> 0
 		    ORDER BY dil.ordered ASC
 		";

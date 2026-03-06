@@ -20,18 +20,84 @@ if(isset($_SESSION['DBC_ITEM_LOCATION']) && $_SESSION['DBC_ITEM_LOCATION'] != ''
 }
 ?>
 <style>
-.smnav-header input[type=text]{padding-left:25px;padding-right:27px}
-.smnav-header select {margin-left: 10px;width:270px;}
-.reload-data {display: flex;gap: 15px;margin-left: auto;right:0;}
-.date-shell {display: flex;gap: 10px;}
-.date-shell input[type=text] {width:140px;}
-.tableFixHead {margin-top:15px;background:#fff;}
-.tableFixHead  { overflow: auto; height: calc(100vh - 222px); width:100% }
-.tableFixHead thead th { position: sticky; top: 0; z-index: 1; background:#0cccae; color:#fff }
+.inventory-mgmt-shell {
+	background:#fff;
+	border:1px solid #dfe3e7;
+	border-radius:10px;
+	box-shadow:0 1px 3px rgba(0,0,0,0.06);
+	padding:12px;
+}
+.inventory-mgmt-title {
+	font-size:15px;
+	font-weight:700;
+	color:#2f3b4a;
+	margin-bottom:8px;
+}
+.smnav-header {
+	display:flex;
+	align-items:center;
+	gap:8px;
+	flex-wrap:wrap;
+	padding-bottom:8px;
+	border-bottom:1px solid #e9ecef;
+}
+.smnav-header input[type=text],
+.smnav-header select {
+	height:34px;
+	font-size:13px;
+	border-radius:6px;
+}
+.smnav-header input[type=text]{padding-left:26px;padding-right:27px}
+.smnav-header select {width:260px;}
+.reload-data {
+	display:flex;
+	align-items:center;
+	gap:8px;
+	margin-left:auto;
+}
+.search-shell {
+	position:relative;
+	width:290px;
+}
+.search-magnifying {
+	position:absolute;
+	top:7px;
+	left:8px;
+	color:#6c757d;
+}
+.search-xmark {
+	position:absolute;
+	top:5px;
+	right:7px;
+	font-size:18px;
+	cursor:pointer;
+	color:#6c757d;
+}
+.search-xmark:hover {color:#dc3545;}
+.tableFixHead {
+	margin-top:12px;
+	background:#fff;
+	border:1px solid #dfe3e7;
+	border-radius:8px;
+	overflow:auto;
+	height:calc(100vh - 255px);
+	width:100%;
+}
+.tableFixHead thead th {
+	position:sticky;
+	top:0;
+	z-index:1;
+	background:#16a8a2;
+	color:#fff;
+	font-size:12px;
+	font-weight:600;
+}
 .tableFixHead table  { border-collapse: collapse;}
-.tableFixHead th, .tableFixHead td { font-size:14px; white-space:nowrap } 
+.tableFixHead th, .tableFixHead td { font-size:13px; white-space:nowrap } 
 </style>
-<div class="smnav-header">
+<div class="inventory-mgmt-shell">
+
+	<div class="smnav-header">
 	<div class="search-shell">
 		<input id="search" type="text" class="form-control form-control-sm" placeholder="Search Inventory" autocomplete="no">	
 		<i class="fa-sharp fa-solid fa-magnifying-glass search-magnifying"></i>
@@ -50,6 +116,7 @@ if(isset($_SESSION['DBC_ITEM_LOCATION']) && $_SESSION['DBC_ITEM_LOCATION'] != ''
 	</span>
 </div>
 <div class="tableFixHead" id="smnavdata">Loading... <i class="fa fa-spinner fa-spin"></i></div>
+</div>
 
 <script>
 function itemsForm(params)

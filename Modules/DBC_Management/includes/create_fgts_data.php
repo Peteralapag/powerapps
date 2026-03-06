@@ -34,11 +34,84 @@ if(isset($_POST['transdate'])) {
 
 ?>
 <style>
-.table td {
-	padding:2px 5px 2px 5px !important;
+.fgts-section {
+	background:#fff;
+	border:1px solid #dfe3e7;
+	border-radius:8px;
+	box-shadow:0 1px 2px rgba(0,0,0,0.04);
+	padding:10px;
+	margin-bottom:12px;
+}
+.fgts-section-title {
+	font-size:14px;
+	font-weight:600;
+	color:#2f3b4a;
+	margin:0 0 8px 2px;
+}
+.fgts-table {
+	margin-bottom:0;
+}
+.fgts-table thead th {
+	background:#16a8a2;
+	color:#fff;
+	border-color:#11918c;
+	font-size:12px;
+	font-weight:600;
+	white-space:nowrap;
+	vertical-align:middle;
+}
+.fgts-table td {
+	padding:5px 8px !important;
+	font-size:12px;
+	vertical-align:middle;
+}
+.fgts-table .table-index {
+	text-align:center;
+	font-weight:600;
+	color:#4a5568;
+}
+.fgts-table .supplier-tag {
+	display:inline-block;
+	padding:2px 8px;
+	font-size:11px;
+	background:#f8f9fa;
+	border:1px solid #d7dde3;
+	border-radius:12px;
+	color:#495057;
+}
+.status-pill {
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	gap:5px;
+	padding:4px 8px;
+	border-radius:14px;
+	font-size:11px;
+	font-weight:600;
+	color:#fff;
+	min-width:118px;
+}
+.status-pending {
+	background:#6c757d;
+}
+.status-received {
+	background:#198754;
+}
+.status-void {
+	background:#dc3545;
+}
+.summary-head th {
+	background:#0f7f7a !important;
+	border-color:#0f7f7a !important;
+}
+.totals-row {
+	background:#eef1f4;
+	font-weight:700;
 }
 </style>
-<table style="width: 100%" class="table table-bordered table-striped table-hover">
+<div class="fgts-section">
+	<div class="fgts-section-title">FGTS Receiving Records</div>
+	<table style="width: 100%" class="table table-bordered table-striped table-hover fgts-table">
 	<thead>
 		<tr>
 			<th style="width:50px;text-align:center">#</th>
@@ -83,29 +156,29 @@ if(isset($_POST['transdate'])) {
 			$fastyle = $status == 'Yes'? '': '';
 			$spanstyle = $status == 'Yes'? 'background:#198754': 'background:#dc3545';
 ?>	
-		<tr style="vertical-align:middle">
-			<td style="text-align:center; height: 25px;"><?php echo $n; ?></td>
-			<td style="height: 25px"><?php echo $reportdate?></td>
-			<td style="height: 25px"><?php echo $id?></td>
-			<td style="height: 25px">DAVAO BAKING CENTER AREA</td>
-			<td style="height: 25px"><?php echo $category?></td>
-			<td style="height: 25px"><?php echo $itemdescription?></td>
-			<td style="height: 25px"><?php echo $itemcode?></td>
-			<td style="height: 25px"><?php echo $qty?></td>
-			<td style="height: 25px"><?php echo $postedby?></td>
-			<td style="height: 25px"><?php echo $confirmedby?></td>
+		<tr>
+			<td class="table-index"><?php echo $n; ?></td>
+			<td><?php echo $reportdate?></td>
+			<td><?php echo $id?></td>
+			<td><span class="supplier-tag">DAVAO BAKING CENTER AREA</span></td>
+			<td><?php echo $category?></td>
+			<td><?php echo $itemdescription?></td>
+			<td><?php echo $itemcode?></td>
+			<td style="text-align:right"><?php echo $qty?></td>
+			<td><?php echo $postedby?></td>
+			<td><?php echo $confirmedby?></td>
 			
 			
-			<td style="width:120px; height: 25px;">
+			<td style="width:130px; text-align:center;">
 				<?php
 					if($status=='No'){
 				?>
-					<span class="form-control form-control-sm" style="text-align:center">PENDING</span>
+					<span class="status-pill status-pending">PENDING</span>
 
 				<?php
 					} else {
 				?>
-					<span class="form-control form-control-sm" style="text-align:center; <?php echo $spanstyle?>"><i class="fa <?php echo $statfa?>" style="<?php echo $fastyle?>" aria-hidden="true"></i>&nbsp;
+					<span class="status-pill <?php echo $status == 'Yes' ? 'status-received' : 'status-void'; ?>"><i class="fa <?php echo $statfa?>" style="<?php echo $fastyle?>" aria-hidden="true"></i>&nbsp;
 						<?php echo $statData?>
 					</span>
 				
@@ -120,19 +193,21 @@ if(isset($_POST['transdate'])) {
 	} else { 
 ?>
 		<tr>
-			<td colspan="9" style="text-align:center"><i class="fa fa-bell"></i>&nbsp;&nbsp;No Records</td>
+			<td colspan="11" style="text-align:center"><i class="fa fa-bell"></i>&nbsp;&nbsp;No Records</td>
 		</tr>
 <?php } ?>
 	</tbody>
 </table>
+</div>
 
 <?php
 	if($function->GetProductionifExist($transdate,$db) == 1){
 ?>
-<hr>
-<table style="width: 100%" class="table table-bordered table-striped">
+<div class="fgts-section">
+<div class="fgts-section-title">Baker and Supervisor Reconciliation</div>
+<table style="width: 100%" class="table table-bordered table-striped fgts-table">
 	<thead>
-		<tr>
+		<tr class="summary-head">
 			<th colspan="5" style="text-align:center">BAKER</th>
 			<th colspan="3" style="text-align:center">SUPERVISOR</th>
 			<th colspan="2" style="text-align:center">REPORTS</th>
@@ -207,7 +282,7 @@ if(isset($_POST['transdate'])) {
 			<?php
 		}
 		?>
-			<tr style="background-color:silver">
+			<tr class="totals-row">
 				<td colspan="8">TOTAL:</td>
 				<td style="text-align:right"><?php echo number_format($chargeTotal,2)?></td>
 				<td style="text-align:right"><?php echo number_format($overyieldTotal,2)?></td>
@@ -217,6 +292,7 @@ if(isset($_POST['transdate'])) {
 	?>
 	</tbody>
 </table>
+</div>
 
 <?php } ?>
 

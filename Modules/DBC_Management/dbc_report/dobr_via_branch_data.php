@@ -51,7 +51,7 @@ if ($stmt = $db->prepare($sql)) {
 
 // 1) Items
 $items = [];
-$sql = "SELECT item_code, item_description, unit_price FROM dbc_itemlist";
+$sql = "SELECT item_code, item_description, unit_price FROM wms_itemlist";
 $res = $db->query($sql);
 if ($res) {
     while ($r = $res->fetch_assoc()) {

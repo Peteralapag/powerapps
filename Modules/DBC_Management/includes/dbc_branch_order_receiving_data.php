@@ -45,7 +45,7 @@ $dateto = isset($_POST['dateto']) ? mysqli_real_escape_string($db, $_POST['datet
 <?php
 //   $sqlQuery = "SELECT SUM(quantity) AS qty, item_code, trans_date, item_description, uom FROM dbc_branch_order WHERE trans_date BETWEEN '$datefrom' AND '$dateto' GROUP BY item_code, trans_date";
   
-	$sqlQuery = "SELECT * FROM dbc_itemlist WHERE active = 1 ORDER BY ordered ASC"; 
+    $sqlQuery = "SELECT * FROM wms_itemlist WHERE active = 1 ORDER BY ordered ASC"; 
 	
 	$results = mysqli_query($db, $sqlQuery);    
     if ($results && mysqli_num_rows($results) > 0) {

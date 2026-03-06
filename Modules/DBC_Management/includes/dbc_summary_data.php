@@ -100,7 +100,7 @@ if ($pcountChecker == 1) {
 	</thead>
 	<tbody>	
 <?PHP
-	$sqlQuery = "SELECT * FROM dbc_itemlist";
+	$sqlQuery = "SELECT * FROM wms_itemlist";
 	$results = mysqli_query($db, $sqlQuery);    
     if ( $results->num_rows > 0 ) 
     {

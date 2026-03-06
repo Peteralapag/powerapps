@@ -382,7 +382,7 @@ class DBCFunctions
 	
 	    $totalPerBranch = array_fill(0, count($branches), 0);
 	
-	    $query = "SELECT * FROM dbc_itemlist WHERE active = 1 ORDER BY ordered ASC";  
+	    $query = "SELECT * FROM wms_itemlist WHERE active = 1 ORDER BY ordered ASC";  
 	    $result = mysqli_query($db, $query);  
 	    $i = 1;
 	    while($ROWS = mysqli_fetch_array($result))  
@@ -767,7 +767,7 @@ class DBCFunctions
 	
 	public function GetItemListColumn($column,$itemcode,$db)
 	{
-		$query ="SELECT * FROM dbc_itemlist WHERE item_code='$itemcode'";  
+		$query ="SELECT * FROM wms_itemlist WHERE item_code='$itemcode'";  
 		$RESULTS = mysqli_query($db, $query);
 		$val = '';
 		if ( $RESULTS->num_rows > 0 ) 
@@ -1280,7 +1280,7 @@ class DBCFunctions
 	}
 	public function GetItemName($itemcode,$db)
 	{
-		$query = "SELECT * FROM dbc_itemlist WHERE item_code='$itemcode'";
+		$query = "SELECT * FROM wms_itemlist WHERE item_code='$itemcode'";
 		$results = $db->query($query);			
 	    if($results->num_rows > 0)
 	    {
@@ -1352,7 +1352,7 @@ class DBCFunctions
 	}
 	public function GetUnitPrice($itemcode,$db)
 	{
-		$query = "SELECT * FROM dbc_itemlist WHERE item_code='$itemcode'";
+		$query = "SELECT * FROM wms_itemlist WHERE item_code='$itemcode'";
 		$results = $db->query($query);			
 	    if($results->num_rows > 0)
 	    {
@@ -1799,7 +1799,7 @@ class DBCFunctions
 	}
 	public function GetItemInfo($column,$itemcode,$db)
 	{
-		$query = "SELECT * FROM dbc_itemlist WHERE item_code='$itemcode'";
+		$query = "SELECT * FROM wms_itemlist WHERE item_code='$itemcode'";
 		$results = mysqli_query($db, $query);    
 		if ( $results->num_rows > 0 ) 
 		{

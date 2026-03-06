@@ -34,14 +34,104 @@ if(isset($_POST['transdate'])) {
 
 ?>
 <style>
-.table td {
-	padding:2px 5px 2px 5px !important;
+.receiving-section {
+	background:#ffffff;
+	border:1px solid #dfe3e7;
+	border-radius:8px;
+	padding:10px;
+	box-shadow:0 1px 2px rgba(0,0,0,0.04);
+	margin-bottom:12px;
 }
-.lamesa-ko td {
+.section-title {
+	font-size:14px;
+	font-weight:600;
+	color:#2f3b4a;
+	margin:0 0 8px 2px;
+	letter-spacing:0.2px;
+}
+.professional-table {
+	margin-bottom:0;
+}
+.professional-table thead th {
+	background:#16a8a2;
+	color:#fff;
+	font-size:12px;
+	font-weight:600;
+	white-space:nowrap;
+	border-color:#11918c;
 	vertical-align:middle;
 }
+.professional-table td {
+	padding:5px 8px !important;
+	font-size:12px;
+	vertical-align:middle;
+}
+.professional-table .table-index {
+	text-align:center;
+	font-weight:600;
+	color:#4a5568;
+}
+.professional-table .qty-cell,
+.professional-table .remarks-cell {
+	text-align:center;
+	border-radius:4px;
+}
+.professional-table .editable-cell {
+	background:#fff8e8;
+	outline:none;
+}
+.professional-table .cell-editor {
+	min-height:28px;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	text-align:center;
+	line-height:1.2;
+	padding:2px 4px;
+	width:100%;
+	border-radius:4px;
+}
+.status-pill {
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	gap:5px;
+	padding:4px 8px;
+	border-radius:14px;
+	font-size:11px;
+	font-weight:600;
+	color:#fff;
+	min-width:108px;
+}
+.status-received {
+	background:#198754;
+}
+.status-void {
+	background:#dc3545;
+}
+.action-stack {
+	display:flex;
+	flex-direction:column;
+	gap:4px;
+}
+.action-stack .btn {
+	font-size:11px;
+	font-weight:600;
+	padding:3px 8px;
+	width:110px;
+}
+.summary-head th {
+	background:#0f7f7a !important;
+	border-color:#0f7f7a !important;
+}
+.totals-row {
+	background:#eef1f4;
+	font-weight:700;
+}
 </style>
-<table style="width: 100%" class="table table-bordered table-striped table-hover">
+<div class="receiving-section">
+	<div class="section-title">Production Receiving Details</div>
+	<table style="width: 100%" class="table table-bordered table-striped table-hover professional-table">
 	<thead>
 		<tr>
 			<th style="width:50px;text-align:center">#</th>
@@ -91,30 +181,32 @@ if(isset($_POST['transdate'])) {
 			$pcount = $status == 'No'? '' : $function->GetDataByRecevingId('pcount','dbc_fgts_pcount',$id,$db);
 			$remarks = $status == 'No'? '' : $function->GetDataByRecevingId('remarks','dbc_fgts_pcount',$id,$db);
 			
-			$pcountstyle = $status == 'No'? 'background-color:#f7e9d5': '';
 			$pcounteditable = $status == 'No'? 'contenteditable="true"': '';
 			
 ?>	
-		<tr class="lamesa-ko">
-			<td style="text-align:center; height: 25px;"><?php echo $n; ?></td>
+		<tr>
+			<td class="table-index"><?php echo $n; ?></td>
 			<td><?php echo $reportdate?></td>
 			<td><?php echo $createdtime?></td>
-			<td>FD RECEPTION AREA</td>
+			<td><span class="badge badge-light" style="font-size:11px;border:1px solid #d7dde3;color:#495057;">FD RECEPTION AREA</span></td>
 			<td><?php echo $category?></td>
 			<td title="<?php echo $itemdescription?>"><?php echo $function->limitStringLength($itemdescription, 30)?></td>
 			<td><?php echo $itemcode?></td>
 			<td><?php echo $id?></td>
 			<td><?php echo $postedby?></td>
-			<td id="pcount_<?php echo $n?>" style="text-align:center; <?php echo $pcountstyle?>" <?php echo $pcounteditable?>><?php echo $pcount?></td>
-			<td id="remarks_<?php echo $n?>" title="<?php echo $remarks?>" style="text-align:center; <?php echo $pcountstyle?>" <?php echo $pcounteditable?>><?php echo $function->limitStringLength($remarks, 20)?></td>
+			<td class="qty-cell <?php echo $status == 'No' ? 'editable-cell' : ''; ?>">
+				<div id="pcount_<?php echo $n?>" class="cell-editor" <?php echo $pcounteditable?>><?php echo $pcount?></div>
+			</td>
+			<td class="remarks-cell <?php echo $status == 'No' ? 'editable-cell' : ''; ?>">
+				<div id="remarks_<?php echo $n?>" title="<?php echo $remarks?>" class="cell-editor" <?php echo $pcounteditable?>><?php echo $function->limitStringLength($remarks, 20)?></div>
+			</td>
 			
 			
-			<td style="width:120px; height: 25px; padding:0 !important">
+			<td style="width:130px;">
 				<?php
 					if($status=='No'){
 				?>
-				
-				
+				<div class="action-stack">
 				<?php 
 						if($function->GetPcountDataInventoryChecker($transdate,$db) == '0'){
 				?>
@@ -131,11 +223,12 @@ if(isset($_POST['transdate'])) {
 					<button class="btn btn-danger btn-sm" style="width:100px" onclick="voidThis('<?php echo $id?>','<?php echo $itemcode?>','<?php echo $category?>','<?php echo $itemdescription?>','<?php echo $qty?>','<?php echo $reportdate?>','<?php echo $shift?>')">
 						Void?&nbsp;<i class="fa fa-times" aria-hidden="true"></i>
 					</button>
+				</div>
 
 				<?php
 					} else {
 				?>
-					<span class="form-control form-control-sm color-white" style="text-align:center; <?php echo $spanstyle?>;"><i class="fa <?php echo $statfa?>" style="<?php echo $fastyle?>" aria-hidden="true"></i>&nbsp;
+					<span class="status-pill <?php echo $status == 'Yes' ? 'status-received' : 'status-void'; ?>"><i class="fa <?php echo $statfa?>" style="<?php echo $fastyle?>" aria-hidden="true"></i>&nbsp;
 						<?php echo $statData?>
 					</span>
 				
@@ -149,19 +242,21 @@ if(isset($_POST['transdate'])) {
 	} else { 
 ?>
 		<tr>
-			<td colspan="9" style="text-align:center"><i class="fa fa-bell"></i>&nbsp;&nbsp;No Records</td>
+			<td colspan="12" style="text-align:center"><i class="fa fa-bell"></i>&nbsp;&nbsp;No Records</td>
 		</tr>
 <?php } ?>
 	</tbody>
 </table>
+</div>
 
 <?php
 	if($function->GetProductionifExist($transdate, $db) == 1){
 ?>
-	<hr>
-	<table style="width: 100%" class="table table-bordered table-striped">
+	<div class="receiving-section">
+		<div class="section-title">Yield & Reconciliation Summary</div>
+		<table style="width: 100%" class="table table-bordered table-striped professional-table">
 		<thead>
-			<tr>
+			<tr class="summary-head">
 				<th colspan="5" style="text-align:center">BAKER</th>
 				<th colspan="3" style="text-align:center">SUPERVISOR</th>
 				<th colspan="2" style="text-align:center">REPORTS</th>
@@ -235,7 +330,7 @@ if(isset($_POST['transdate'])) {
 				<?php
 			}
 			?>
-				<tr style="background-color:silver">
+				<tr class="totals-row">
 					<td colspan="8">TOTAL:</td>
 					<td style="text-align:right"><?php echo number_format($chargeTotal,2)?></td>
 					<td style="text-align:right"><?php echo number_format($overyieldTotal,2)?></td>
@@ -245,7 +340,8 @@ if(isset($_POST['transdate'])) {
 		}
 		?>
 		</tbody>
-	</table>
+		</table>
+	</div>
 	
 	<?php } ?>
 
@@ -275,13 +371,24 @@ function receiveThis(n,id,itemcode,category,itemdescription,qty,reportdate,shift
 		app_alert("System Message", "Please enter a valid number for pcount", "warning");
         return false;
     }
-	
 
-	rms_reloaderOn('Loading...');
-	$.post("./Modules/DBC_Management/actions/actions.php", { mode: mode, id: id, itemcode: itemcode, category: category, itemdescription: itemdescription, qty: qty, reportdate: reportdate, shift: shift, pcount: pcount, remarks: remarks },
-	function(data) {		
-		$('#smnavdata').html(data);
-		rms_reloaderOff();
+	swal({
+		title: "Confirm Receive",
+		text: "Proceed receiving this item?",
+		icon: "warning",
+		buttons: ['Cancel', 'Yes, Receive'],
+		dangerMode: false,
+	}).then(function(isConfirm) {
+		if (!isConfirm) {
+			return;
+		}
+
+		rms_reloaderOn('Loading...');
+		$.post("./Modules/DBC_Management/actions/actions.php", { mode: mode, id: id, itemcode: itemcode, category: category, itemdescription: itemdescription, qty: qty, reportdate: reportdate, shift: shift, pcount: pcount, remarks: remarks },
+		function(data) {		
+			$('#smnavdata').html(data);
+			rms_reloaderOff();
+		});
 	});		
 }
 </script>

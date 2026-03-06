@@ -13,8 +13,10 @@ $trans_date = $_POST['trans_date'];
 $permission = 'p_edit';
 if($function->GetModulePermission($username,$userlevel,$module,$permission,$db) == 1)
 {
+	$canEdit = 1;
 	$contenteditable = 'true';
 } else {
+	$canEdit = 0;
 	$contenteditable = 'false';
 }
 $_SESSION['DBC_SHOW_LIMIT'] = $_POST['limit'];
@@ -44,22 +46,102 @@ if(isset($_POST['search']) && $_POST['search'])
 }
 ?>
 <style>
-.excel-table {border-collapse: collapse;}
-.excel-table td {border: 1px solid #ccc;padding: 5px;min-width: 50px;text-align: right;}
-.excel-cell {text-align: right;}
-.excel-table {width:100%;border-collapse:collapse; background:#fff !important}
-.excel-table th {border: 1px solid #aeaeae;padding: 4px !important; padding-left: 10px !important}
-.excel-table td {border: 1px solid #aeaeae;padding: 4px !important;}
+.phy-shell {
+	background:#fff;
+	border:1px solid #dfe3e7;
+	border-radius:8px;
+	box-shadow:0 1px 2px rgba(0,0,0,0.04);
+	padding:10px;
+}
+.phy-title {
+	font-size:14px;
+	font-weight:600;
+	color:#2f3b4a;
+	margin:0 0 8px 2px;
+}
+.phy-table {
+	width:100%;
+	border-collapse:collapse;
+	background:#fff !important;
+	margin-bottom:0;
+}
+.phy-table thead th {
+	background:#16a8a2;
+	color:#fff;
+	border:1px solid #11918c;
+	padding:5px 8px !important;
+	font-size:12px;
+	font-weight:600;
+	white-space:nowrap;
+	vertical-align:middle;
+}
+.phy-table td {
+	border:1px solid #d7dde3;
+	padding:5px 8px !important;
+	font-size:12px;
+	vertical-align:middle;
+}
+.excel-cell {
+	text-align:right;
+	line-height:1.3;
+}
+.row-index {
+	text-align:center !important;
+	background:#f4f6f8;
+	font-weight:600;
+	color:#4a5568;
+}
+.item-code-cell,
+.uom-cell {
+	text-align:center !important;
+}
+.item-name-cell {
+	text-align:left !important;
+}
+.pcount-cell {
+	background:#f8fafc;
+	min-width:140px;
+	font-weight:600;
+}
+.pcount-cell[contenteditable="true"] {
+	background:#fff8e8;
+	outline:none;
+}
+.action-cell {
+	width:185px;
+	padding:4px !important;
+}
+.action-stack {
+	display:flex;
+	flex-direction:row;
+	gap:4px;
+	align-items:center;
+	white-space:nowrap;
+}
+.action-stack .btn {
+	font-size:11px;
+	font-weight:600;
+	padding:4px 8px;
+	min-width:86px;
+}
+.spacer-col {
+	width:100%;
+	background:#fff;
+	border-left:none !important;
+	border-right:none !important;
+}
 </style>
-<table class="excel-table resizable-table table table-bordered table-striped">
+<div class="phy-shell">
+<div class="phy-title">Inventory Physical Count Details</div>
+<table class="phy-table resizable-table table table-bordered table-striped">
 	<thead>
 		<tr>
-			<th style="text-align:center;width:40px !important;background:#e6e6e6">#</th>
+			<th style="text-align:center;width:40px !important">#</th>
 			<th><i class="fa-solid fa-code color-green"></i>&nbsp;&nbsp;ITEMCODE</th>
 			<th><i class="fa-solid fa-basket-shopping color-green"></i>&nbsp;&nbsp;ITEM DESCRIPTION</th>
 			<th><i class="fa-solid fa-weight-scale color-green"></i>&nbsp;&nbsp;UNITS OF MEASURES</th>		
 			<th><i class="fa-solid fa-tally color-green"></i>&nbsp;&nbsp;PHYSICAL COUNT</th>
-	   	<?php if($function->GetModulePermission($username,$userlevel,$module,$permission,$db) == 1) { ?>			
+	   	<?php if($canEdit == 1) { ?>			
 			<th style="text-align:center"><i class="fa-solid fa-bolt color-red"></i>&nbsp;&nbsp;ACTIONS</th>	
 		<?php } ?>
 			<th></th>
@@ -67,7 +149,7 @@ if(isset($_POST['search']) && $_POST['search'])
 	</thead>
 	<tbody>
 <?php
-	echo $queryItems = "SELECT * FROM wms_itemlist $q $limit";
+	$queryItems = "SELECT * FROM wms_itemlist $q $limit";
 	$resultsItems = $db->query($queryItems);			
 	if ( $resultsItems->num_rows > 0 ) 
     {	
@@ -79,20 +161,21 @@ if(isset($_POST['search']) && $_POST['search'])
 			$itemcode = $COUNTROWS['item_code'];
 ?>
 	    <tr>
-	        <td class="excel-cell resizable-cell" style="text-align:center;;background:#e6e6e6"><?php echo $j; ?></td>
-	        <td class="excel-cell resizable-cell" style="text-align: left;padding-left:10px !important;width:150px;text-align:center"><?php echo $COUNTROWS['item_code']; ?></td>
-	        <td class="excel-cell resizable-cell" style="text-align: left;padding-left:10px !important"><?php echo $COUNTROWS['item_description']; ?></td>	        
-   	        <td class="excel-cell resizable-cell" style="text-align: center;padding-left:10px !important;width:150px"><?php echo $COUNTROWS['uom']; ?></td>
-	        <td id="pcountvalue<?php echo $j; ?>" contenteditable="<?php echo $contenteditable; ?>" class="excel-cell resizable-cell" style="padding-right:10px !important;background:#f6f6f6;width:150px">
+	        <td class="excel-cell resizable-cell row-index"><?php echo $j; ?></td>
+	        <td class="excel-cell resizable-cell item-code-cell" style="width:150px"><?php echo $COUNTROWS['item_code']; ?></td>
+	        <td class="excel-cell resizable-cell item-name-cell"><?php echo $COUNTROWS['item_description']; ?></td>	        
+	       	<td class="excel-cell resizable-cell uom-cell" style="width:150px"><?php echo $COUNTROWS['uom']; ?></td>
+	        <td id="pcountvalue<?php echo $j; ?>" contenteditable="<?php echo $contenteditable; ?>" class="excel-cell resizable-cell pcount-cell">
 	        <?php echo number_format($inventory->GetPcountData($COUNTROWS['item_code'],$trans_date,'p_count',$db),2); ?>
 	        </td>
 				<input id="itemcode<?php echo $j; ?>" type="hidden" value="<?php echo $COUNTROWS['item_code']; ?>">
 		        <input id="category<?php echo $j; ?>" type="hidden" value="<?php echo $COUNTROWS['category']; ?>">
 		        <input id="itemname<?php echo $j; ?>" type="hidden" value="<?php echo $COUNTROWS['item_description']; ?>">
 		        <input id="uom<?php echo $j; ?>" type="hidden" value="<?php echo $COUNTROWS['uom']; ?>">
-	   		<?php if($function->GetModulePermission($username,$userlevel,$module,$permission,$db) == 1) { ?>
-	        <td style="width:100px;padding:1px !important">
-	        	<button class="btn btn-info btn-sm color-white" style="font-size:12px" onclick="savePcount('<?php echo $j; ?>')">
+	   		<?php if($canEdit == 1) { ?>
+	        <td class="action-cell">
+				<div class="action-stack">
+	        	<button class="btn btn-info btn-sm color-white" onclick="savePcount('<?php echo $j; ?>')">
 	        		<i class="fa-solid fa-pen-to-square"></i>&nbsp;&nbsp;Update
 	        	</button>
 	        	<?php
@@ -103,20 +186,22 @@ if(isset($_POST['search']) && $_POST['search'])
 	        			$dis_able = 'disabled';
 	        		}
 	        	?>	        	
-	        	<button class="btn btn-warning btn-sm color-white" style="font-size:12px" onclick="undoPcount('<?php echo $j; ?>')" <?php echo $dis_able; ?>>
+	        	<button class="btn btn-warning btn-sm color-white" onclick="undoPcount('<?php echo $j; ?>')" <?php echo $dis_able; ?>>
 	        		<i class="fa-solid fa-rotate-left color-red"></i>&nbsp;&nbsp;Undo
 	        	</button>
+				</div>
 	        </td>
         <?php } ?>
-	        <td style="width:100%">&nbsp;</td>
+	        <td class="spacer-col">&nbsp;</td>
 	    </tr>
 <?php } } else { ?>
 		<tr>
-			<td colspan="7" style="text-align:center;padding:px !important; font-size:18px"><i class="fa fa-bell color-orange"></i>&nbsp;&nbsp;&nbsp;No Item found.</td>
+			<td colspan="<?php echo $canEdit == 1 ? 7 : 6; ?>" style="text-align:center; font-size:16px"><i class="fa fa-bell color-orange"></i>&nbsp;&nbsp;&nbsp;No Item found.</td>
 		</tr>
 <?php } ?>		    
 	</tbody>
 </table>
+</div>
 <div id="results"></div>
 <script>
 function undoPcount(elemid)

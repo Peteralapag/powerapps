@@ -52,20 +52,87 @@ $imagelink = $_SERVER['DOCUMENT_ROOT']."/Modules/DBC_Management/images/company_l
 $trans_date = $_SESSION['DBC_TRANSDATE'];
 ?>
 <style>
-.smnav-header input[type=text]{padding-left:25px;padding-right:27px}
-.smnav-header select {margin-left: 10px;width:270px;}
-.reload-data {display: flex;gap: 15px;margin-left: auto;right:0;}
-.date-shell {display: flex;gap: 5px;}
-.date-shell input[type=text] {width:150px !important;}
-.tableFixHead {margin-top:15px;background:#fff;}
-.tableFixHead  { overflow: auto; height: calc(100vh - 222px); width:100% }
-.tableFixHead thead th { position: sticky; top: 0; z-index: 1; background:#0cccae; color:#fff }
+.receiving-shell {
+	background:#fff;
+	border:1px solid #dfe3e7;
+	border-radius:10px;
+	box-shadow:0 1px 3px rgba(0,0,0,0.06);
+	padding:12px;
+}
+.receiving-title {
+	font-size:15px;
+	font-weight:700;
+	color:#2f3b4a;
+	margin-bottom:8px;
+}
+.smnav-header {
+	display:flex;
+	align-items:center;
+	gap:10px;
+	flex-wrap:wrap;
+	padding-bottom:8px;
+	border-bottom:1px solid #e9ecef;
+}
+.smnav-header input[type=text],
+.smnav-header input[type=date],
+.smnav-header select {
+	height:34px;
+	font-size:13px;
+	border-radius:6px;
+}
+.smnav-header select {width:220px;}
+.reload-data {
+	display:flex;
+	align-items:center;
+	gap:8px;
+	margin-left:auto;
+}
+.date-shell {display:flex;align-items:center;gap:6px;}
+.date-shell input[type=date] {width:170px !important;}
+.smnav-header .btn {
+	height:34px;
+	font-size:12px;
+	font-weight:600;
+	padding:6px 12px;
+	border-radius:6px;
+}
+.pending-wrap {
+	font-size:12px;
+	font-weight:600;
+	color:#495057;
+	margin-left:4px;
+}
+.pending-wrap .badge {
+	font-size:11px;
+	padding:5px 8px;
+	border-radius:10px;
+}
+.tableFixHead {
+	margin-top:12px;
+	background:#fff;
+	border:1px solid #dfe3e7;
+	border-radius:8px;
+	overflow:auto;
+	height:calc(100vh - 255px);
+	width:100%;
+}
+.tableFixHead thead th {
+	position:sticky;
+	top:0;
+	z-index:1;
+	background:#16a8a2;
+	color:#fff;
+	font-size:12px;
+	font-weight:600;
+}
 .tableFixHead table  { border-collapse: collapse;}
-.tableFixHead th, .tableFixHead td { font-size:14px; white-space:nowrap } 
+.tableFixHead th, .tableFixHead td { font-size:13px; white-space:nowrap } 
 .psapointer { cursor:pointer; }
 
 </style>
-<div class="smnav-header">
+<div class="receiving-shell">
+
+	<div class="smnav-header">
 	
 	<div class="date-shell">
 		<input id="transdate" type="date" class="form-control form-control-sm psapointer" style="width:150px" value="<?php echo $trans_date; ?>" onchange="searchMe()">
@@ -76,7 +143,7 @@ $trans_date = $_SESSION['DBC_TRANSDATE'];
 	
 	<?php if($function->getPendingApprovalCount($db)!='0'){ ?>
 
-		<span style="margin-left:30px; margin-top:6px; font-size:12px">
+		<span class="pending-wrap">
 			Pending approval <span class="badge bg-danger psapointer" ondblclick="openpendingapproval()"><?php echo $function->getPendingApprovalCount($db)?></span>
 		</span>
 	
@@ -96,6 +163,7 @@ $trans_date = $_SESSION['DBC_TRANSDATE'];
 	</span>
 </div>
 <div class="tableFixHead" id="smnavdata">&nbsp;&nbsp;Loading... <i class="fa fa-spinner fa-spin"></i></div>
+</div>
 
 <script>
 

@@ -9,8 +9,8 @@ $trans_date = $_POST['trans_date'];
 $remarks = $_POST['remarks'];
 $itemcode = $_POST['itemcode'];
 $elemid = $_POST['elemid'];
-$itemname = $function->GetAnyQuery('dbc_itemlist','item_code',$itemcode,'item_description',$db);
-$category = $function->GetAnyQuery('dbc_itemlist','item_code',$itemcode,'category',$db);
+$itemname = $function->GetAnyQuery('wms_itemlist','item_code',$itemcode,'item_description',$db);
+$category = $function->GetAnyQuery('wms_itemlist','item_code',$itemcode,'category',$db);
 ?>
 <style>
 .pcount-input-value {position: absolute;top: 0;left: 0;bottom:0;margin: 0;border:0;width:100%;font-size:16px;text-align:center;cursor: pointer;}

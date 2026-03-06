@@ -95,7 +95,7 @@ if ($stmt = $db->prepare($sql)) {
     </thead>
     <tbody>
     <?php
-    $sqlQuery = "SELECT * FROM dbc_itemlist WHERE active=1";
+    $sqlQuery = "SELECT * FROM wms_itemlist WHERE active=1";
     $results = mysqli_query($db, $sqlQuery);
     if ($results && $results->num_rows > 0) {
         $i = 0;

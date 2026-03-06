@@ -9,11 +9,69 @@ $dateNow = $_SESSION['DBC_TRANSDATE'];
 $user = $_SESSION['application_appnameuser'];
 ?>
 <style>
-.form-wrapper {width:500px;max-height:500px;overflow-y:auto;}
-.table th {font-size:14px !important;}
+.fgts-form-shell {
+	width:560px;
+	max-height:72vh;
+	overflow-y:auto;
+	background:#fff;
+	border:1px solid #dee2e6;
+	border-radius:10px;
+	box-shadow:0 2px 8px rgba(0,0,0,0.06);
+	padding:12px;
+}
+.fgts-title {
+	font-size:15px;
+	font-weight:700;
+	color:#2f3b4a;
+	margin-bottom:8px;
+}
+.fgts-subtitle {
+	font-size:12px;
+	color:#6c757d;
+	margin-bottom:10px;
+}
+.fgts-form-table {
+	margin-bottom:0;
+}
+.fgts-form-table th {
+	font-size:13px !important;
+	font-weight:600;
+	color:#3e4a59;
+	width:155px;
+	padding:6px 8px;
+	vertical-align:middle;
+}
+.fgts-form-table td {
+	padding:6px 8px;
+	vertical-align:middle;
+}
+.fgts-form-table .form-control {
+	border-radius:6px;
+	font-size:13px;
+	height:34px;
+}
+.fgts-form-table .form-control:disabled {
+	background:#f8f9fa;
+	color:#495057;
+}
+.fgts-actions {
+	display:flex;
+	justify-content:flex-end;
+	margin-top:12px;
+	padding-top:10px;
+	border-top:1px solid #e9ecef;
+}
+.fgts-actions .btn {
+	min-width:120px;
+	font-size:12px;
+	font-weight:600;
+	padding:6px 12px;
+}
 </style>
-<div class="form-wrapper">	
-	<table style="width: 100%" class="table">
+<div class="fgts-form-shell">	
+	<div class="fgts-title">FGTS Entry Form</div>
+	<div class="fgts-subtitle">Create daily FGTS record for DBC production receiving.</div>
+	<table style="width: 100%" class="table table-borderless fgts-form-table">
 		<tr>
 			<th>Report Date</th>
 			<td>
@@ -48,7 +106,7 @@ $user = $_SESSION['application_appnameuser'];
 			</td>
 		</tr>
 		<tr>
-			<th>ITEM CODE</th>
+			<th>Item Code</th>
 			<td>
 				<input id="itemcode" type="text" class="form-control" value="" disabled>
 			</td>
@@ -71,11 +129,9 @@ $user = $_SESSION['application_appnameuser'];
 				<input type="time" id="timecreated" class="form-control">
 			</td>
 		</tr>
-
-
 	</table>
-	<div style="float:right">
-		<button type="button" class="btn btn-success btn-sm" onclick="saveFgts()">Add FGTS</button>
+	<div class="fgts-actions">
+		<button type="button" class="btn btn-success btn-sm" onclick="saveFgts()">Save FGTS</button>
 	</div>
 </div>
 <div id="results"></div>

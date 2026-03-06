@@ -215,7 +215,7 @@ if($week != 0)
 	$col = '*';
 }
 
-$sqlXLQuery = "SELECT * FROM dbc_itemlist WHERE recipient='$recipient'";
+$sqlXLQuery = "SELECT * FROM wms_itemlist WHERE recipient='$recipient'";
 $xlResults = mysqli_query($db, $sqlXLQuery);
 if ($xlResults->num_rows > 0)
 {

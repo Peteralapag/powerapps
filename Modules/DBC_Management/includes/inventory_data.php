@@ -35,9 +35,9 @@ if(isset($_POST['search']))
 	
 	if(isset($_POST['location']) && $_POST['location'] != '')
 	{
-		$q = "WHERE wms_itemlist.recipient='$location' AND  (wms_inventory_stock.item_code LIKE '%$search%' OR wms_inventory_stock.item_description LIKE '%$search%')";
+		$q = "WHERE wms_itemlist.recipient='$location' AND (dbc_inventory_stock.item_code LIKE '%$search%' OR wms_itemlist.item_description LIKE '%$search%')";
 	} else {	
-		$q = "WHERE wms_inventory_stock.item_code LIKE '%$search%' OR wms_inventory_stock.item_description LIKE '%$search%'";
+		$q = "WHERE dbc_inventory_stock.item_code LIKE '%$search%' OR wms_itemlist.item_description LIKE '%$search%'";
 	}
 
 } else {
@@ -47,28 +47,103 @@ if(isset($_POST['search']))
 		$location = $_POST['location'];
 		$q = "WHERE wms_itemlist.recipient='$location'";
 	} else {
-		$q = "ORDER BY wms_inventory_stock.supplier_id DESC";
+		$q = "ORDER BY dbc_inventory_stock.supplier_id DESC";
 	}
 }
 
 
 ?>
 <style>
-.stable td {
-	padding:2px 5px 2px 5px !important;
+.inventory-shell {
+	background:#fff;
+	border:1px solid #dfe3e7;
+	border-radius:8px;
+	box-shadow:0 1px 2px rgba(0,0,0,0.04);
+	padding:10px;
+}
+.inventory-title {
+	font-size:14px;
+	font-weight:600;
+	color:#2f3b4a;
+	margin:0 0 8px 2px;
+}
+.inventory-table {
+	margin-bottom:0;
+}
+.inventory-table thead th {
+	background:#16a8a2;
+	color:#fff;
+	border-color:#11918c;
+	font-size:12px;
+	font-weight:600;
+	white-space:nowrap;
+	vertical-align:middle;
+}
+.inventory-table td {
+	padding:5px 8px !important;
+	font-size:12px;
+	vertical-align:middle;
+}
+.inventory-table .table-index {
+	text-align:center;
+	font-weight:600;
+	color:#4a5568;
+}
+.inventory-table .numeric {
+	text-align:right;
+	padding-right:14px !important;
+}
+.inventory-table .uom-cell {
+	text-align:center !important;
+}
+.inventory-table .status-cell {
+	text-align:center;
+}
+.status-pill {
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	padding:4px 8px;
+	border-radius:12px;
+	font-size:11px;
+	font-weight:600;
+	min-width:110px;
+	color:#fff;
+}
+.status-danger {
+	background:#dc3545;
+}
+.status-warning {
+	background:#fd7e14;
+}
+.status-ok {
+	background:#198754;
+}
+.action-cell {
+	padding:4px !important;
+	text-align:center;
+}
+.action-cell .btn {
+	font-size:11px;
+	font-weight:600;
+	padding:4px 10px;
 }
 .sup-title {
 	position:absolute;
-	display: none;
-	border:1px solid blue;;
-	padding:5px 10px 5px 10px;
+	display:none;
+	border:1px solid #2f80ed;
+	padding:5px 10px;
 	white-space:nowrap;
 	border-radius:5px;
-	cursor: pointer;
-	left:50px
+	cursor:pointer;
+	left:50px;
+	box-shadow:0 2px 8px rgba(0,0,0,0.12);
+	z-index:5;
 }
 </style>
-<table style="width: 100%" class="table table-bordered table-striped table-hover">
+<div class="inventory-shell">
+<div class="inventory-title">Inventory Stock Summary</div>
+<table style="width: 100%" class="table table-bordered table-striped table-hover inventory-table">
 	<thead>
 		<tr>
 			<th style="width:50px;text-align:center">#</th>
@@ -88,8 +163,8 @@ if(isset($_POST['search']))
 	<tbody>
 <?PHP
 	$sqlQuery = "
-		SELECT * FROM wms_inventory_stock 
-        INNER JOIN wms_itemlist ON wms_inventory_stock.item_code = wms_itemlist.item_code
+		SELECT * FROM dbc_inventory_stock 
+        INNER JOIN wms_itemlist ON dbc_inventory_stock.item_code = wms_itemlist.item_code
         $q $limit
     ";
 	$results = mysqli_query($db, $sqlQuery);    
@@ -103,7 +178,7 @@ if(isset($_POST['search']))
 			$supplier_id = $INVROW['supplier_id'];
 			$item_code = $INVROW['item_code'];
 			$item = $INVROW['item_description'];					
-			$sqlQueryRecords = "SELECT * FROM wms_inventory_records WHERE year='$year' AND month='$month' AND item_code='$item_code'";
+			$sqlQueryRecords = "SELECT * FROM dbc_inventory_records WHERE year='$year' AND month='$month' AND item_code='$item_code'";
 			$invResults = mysqli_query($db, $sqlQueryRecords);    
 		    if ( $invResults->num_rows > 0 ) 
 		    {
@@ -159,7 +234,7 @@ if(isset($_POST['search']))
 
 ?>			
 		<tr>
-			<td style="width:50px;text-align:center"><?php echo $i; ?></td>
+			<td class="table-index" style="width:50px"><?php echo $i; ?></td>
 			<td style="position:relative" id="supplier<?php echo $i; ?>"><?php echo $supplier_id; ?>
 				<div class="sup-title" id="supplier_wrapper<?php echo $i; ?>" style="background:#ffffff !important">
 					<?php echo $function->GetSupplierName($supplier_id,$db); ?>
@@ -167,16 +242,18 @@ if(isset($_POST['search']))
 			</td>
 			<td><?php echo $item_code; ?></td>
 			<td><?php echo $INVROW['item_description']; ?></td>
-			<td style="text-align:right;padding-right:20px !important"><?php echo $INVROW['stock_in_hand']; ?></td>
-			<td style="text-align:center !important"><?php echo $INVROW['uom']; ?></td>
-			<td style="text-align:right;padding-right:20px !important"><?php echo $average_dr; ?></td>
-			<td style="text-align:right;padding-right:20px !important"><?php echo $max_dr; ?></td>
-			<td style="text-align:right;padding-right:20px !important"><?php echo $rol; ?></td>
-			<td style="text-align:right;padding-right:20px !important"><?php echo $safety_stocks; ?></td>
-			<td <?php echo $tdInv_color; ?>><?php echo $tdInv_text; ?></td>
-			<td style="padding:0 !important">
+			<td class="numeric"><?php echo $INVROW['stock_in_hand']; ?></td>
+			<td class="uom-cell"><?php echo $INVROW['uom']; ?></td>
+			<td class="numeric"><?php echo $average_dr; ?></td>
+			<td class="numeric"><?php echo $max_dr; ?></td>
+			<td class="numeric"><?php echo $rol; ?></td>
+			<td class="numeric"><?php echo $safety_stocks; ?></td>
+			<td class="status-cell">
+				<span class="status-pill <?php echo $INVROW['stock_in_hand'] <= $safety_stocks ? 'status-danger' : ($INVROW['stock_in_hand'] < $rol ? 'status-warning' : 'status-ok'); ?>"><?php echo $tdInv_text; ?></span>
+			</td>
+			<td class="action-cell">
 				<div class="btn-group" role="group" aria-label="Ronan Sarbon">
-					<button class="btn btn-primary" style="padding:5px" onclick="itemDetails('<?php echo $item_code; ?>','<?php echo $item; ?>')">Item Details</button>
+					<button class="btn btn-primary btn-sm" onclick="itemDetails('<?php echo $item_code; ?>','<?php echo $item; ?>')">Item Details</button>
 				</div>
 			</td>
 		</tr>
@@ -199,6 +276,7 @@ $(function()
 <?PHP } ?>			
 	</tbody>
 </table>
+</div>
 <script>
 function itemDetails(itemcode,item)
 {

@@ -59,18 +59,69 @@ if(isset($_POST['transdate'])) {
 
 ?>
 <style>
-.smnav-header input[type=text]{padding-left:25px;padding-right:27px}
-.smnav-header select {margin-left: 10px;width:270px;}
-.reload-data {display: flex;gap: 15px;margin-left: auto;right:0;}
-.date-shell {display: flex;gap: 5px;}
-.date-shell input[type=text] {width:150px !important;}
-.tableFixHead {margin-top:15px;background:#fff;}
-.tableFixHead  { overflow: auto; height: calc(100vh - 222px); width:100% }
-.tableFixHead thead th { position: sticky; top: 0; z-index: 1; background:#0cccae; color:#fff }
-.tableFixHead table  { border-collapse: collapse;}
-.tableFixHead th, .tableFixHead td { font-size:14px; white-space:nowrap } 
+.fgts-shell {
+	background:#fff;
+	border:1px solid #dfe3e7;
+	border-radius:10px;
+	box-shadow:0 1px 3px rgba(0,0,0,0.06);
+	padding:12px;
+}
+.fgts-title {
+	font-size:15px;
+	font-weight:700;
+	color:#2f3b4a;
+	margin-bottom:8px;
+}
+.smnav-header {
+	display:flex;
+	align-items:center;
+	gap:10px;
+	flex-wrap:wrap;
+	padding-bottom:8px;
+	border-bottom:1px solid #e9ecef;
+}
+.smnav-header select,
+.smnav-header input {
+	height:34px;
+	font-size:13px;
+	border-radius:6px;
+}
+.reload-data {
+	display:flex;
+	align-items:center;
+	gap:8px;
+	margin-left:auto;
+}
+.date-shell {
+	display:flex;
+	align-items:center;
+	gap:6px;
+}
+.date-shell input[type=date] {width:170px !important;}
+.tableFixHead {
+	margin-top:12px;
+	background:#fff;
+	border:1px solid #dfe3e7;
+	border-radius:8px;
+	overflow:auto;
+	height:calc(100vh - 255px);
+	width:100%;
+}
+.tableFixHead thead th {
+	position:sticky;
+	top:0;
+	z-index:1;
+	background:#16a8a2;
+	color:#fff;
+	font-size:12px;
+	font-weight:600;
+}
+.tableFixHead table  { border-collapse: collapse; }
+.tableFixHead th, .tableFixHead td { font-size:13px; white-space:nowrap; }
 </style>
-<div class="smnav-header">
+<div class="fgts-shell">
+
+	<div class="smnav-header">
 	<div class="date-shell">
 		<input id="transdate" type="date" class="form-control form-control-sm" style="width:150px" value="<?php echo $transdate; ?>" onchange="searchMe()">
 	</div>
@@ -90,13 +141,14 @@ if(isset($_POST['transdate'])) {
 	</span>
 	<span class="reload-data">
 		<!--span><button type="button" class="btn btn-sm btn-warning" onclick="printMe()" style="width:100px"><i class="fa fa-print" aria-hidden="true"></i>&nbsp;Print</button></span-->
-		<span style="margin-left:20px;margin-top:4px;">Show</span>
+		<span style="margin-left:8px;">Show</span>
 		<select id="limit" style="width:70px" class="form-control form-control-sm" onchange="load_data()">
 			<?php echo $function->GetRowLimit($show_limit); ?>
 		</select>
 	</span>
 </div>
 <div class="tableFixHead" id="smnavdata">&nbsp;&nbsp;Loading... <i class="fa fa-spinner fa-spin"></i></div>
+</div>
 
 <script>
 

@@ -3,7 +3,7 @@ include '../../../init.php';
 $db = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 $rowid = $_POST['rowid'];
 $limit = $_POST['limit'];
-$queryDataDelete = "DELETE FROM dbc_itemlist WHERE id='$rowid' ";
+$queryDataDelete = "DELETE FROM wms_itemlist WHERE id='$rowid' ";
 if ($db->query($queryDataDelete) === TRUE)
 { 
 	print_r('

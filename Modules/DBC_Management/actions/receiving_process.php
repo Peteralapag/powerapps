@@ -142,7 +142,7 @@ if($mode == 'add')
 }
 if($mode == 'edit') {
 	$update = "item_code='$item_code',category='$category',item_description='$item_description',uom='$uom',conversion='$conversion',updated_by='$app_user',date_updated='$date_user',active='$active',unit_price='$unit_price',supplier_id='$supplier_id'";
-	$queryDataUpdate = "UPDATE dbc_itemlist SET $update WHERE id='$rowid'";
+	$queryDataUpdate = "UPDATE wms_itemlist SET $update WHERE id='$rowid'";
 	if ($db->query($queryDataUpdate) === TRUE)
 	{
 		print_r('

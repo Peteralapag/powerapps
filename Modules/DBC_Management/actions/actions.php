@@ -229,7 +229,7 @@ if ($mode == 'saveChargesInvolved') {
 if($mode == 'getItemCodeNewModulesCharges'){
 	$itemname = $_POST['itemname'];
     
-    $query ="SELECT * FROM dbc_itemlist WHERE item_description=?";  
+	$query ="SELECT * FROM wms_itemlist WHERE item_description=?";  
     $stmt = $db->prepare($query);
     $stmt->bind_param("s", $itemname);
     $stmt->execute();
@@ -615,7 +615,7 @@ if($mode == 'saveCharges'){
     $stockinhand = $function->GetInventoryStockStocknHandReturn('stock_in_hand',$itemCode,$db);
     
 
-	$unitprice = $function->customemoduletablegetvalue('unit_price','dbc_itemlist','item_code',$itemCode,$db);
+	$unitprice = $function->customemoduletablegetvalue('unit_price','wms_itemlist','item_code',$itemCode,$db);
 	
 	$total = $actualYield * $unitprice;
 
@@ -986,7 +986,7 @@ if($mode == 'voidthisreturn'){
 if($mode == 'getItemCodeNewModules'){
 	$itemname = $_POST['itemname'];
     
-    $query ="SELECT * FROM dbc_itemlist WHERE item_description=?";  
+	$query ="SELECT * FROM wms_itemlist WHERE item_description=?";  
     $stmt = $db->prepare($query);
     $stmt->bind_param("s", $itemname);
     $stmt->execute();
@@ -1211,7 +1211,7 @@ if($mode == 'getActualYield'){
 	$batch = $_POST['batch'];
 	$itemcode = $_POST['itemcode'];
     
-    $query ="SELECT * FROM dbc_itemlist WHERE item_code=?";  
+	$query ="SELECT * FROM wms_itemlist WHERE item_code=?";  
     $stmt = $db->prepare($query);
     $stmt->bind_param("s", $itemcode);
     $stmt->execute();
@@ -1243,7 +1243,7 @@ if($mode == 'getActualYield'){
 if($mode == 'getItemCode'){
 	$itemname = $_POST['itemname'];
     
-    $query ="SELECT * FROM dbc_itemlist WHERE item_description=?";  
+	$query ="SELECT * FROM wms_itemlist WHERE item_description=?";  
     $stmt = $db->prepare($query);
     $stmt->bind_param("s", $itemname);
     $stmt->execute();
@@ -1352,6 +1352,7 @@ if ($mode == 'receivedbc') {
     
     $prevdate = date('Y-m-d', strtotime($reportdate. ' -1 day'));
 
+	
     if($function->getPcountExist($prevdate,$db) == '0'){
     
     	echo '<script>
@@ -1418,54 +1419,6 @@ if ($mode == 'receivedbc') {
 ######################################
 
 
-
-
-if ($mode == 'receivedbc______') {
-    $id = $_POST['id'];
-    $reportdate = $_POST['reportdate'];
-    $shift = $_POST['shift'];
-    $itemcode = $_POST['itemcode'];
-    $category = $_POST['category'];
-    $itemdescription = $_POST['itemdescription'];
-    $qty = $_POST['qty'];
-    $user = $_SESSION['dbc_appnameuser'];
-
-    $updateQueryStock = "UPDATE dbc_inventory_stock
-                         SET stock_in_hand = stock_in_hand + ?, updated_by = ?
-                         WHERE item_description = ?";
-    $stmtStock = $db->prepare($updateQueryStock);
-    if ($stmtStock) {
-        $stmtStock->bind_param("dss", $qty, $user, $itemdescription);
-        if ($stmtStock->execute()) {
-        
-            $updateQueryProduction = "UPDATE dbc_dbc_production
-                                      SET confirmed_by = ?, status = 'Yes'
-                                      WHERE receiving_detail_id = ?";
-            $stmtProduction = $db->prepare($updateQueryProduction);
-            if ($stmtProduction) {
-                $stmtProduction->bind_param("ss", $user, $id);
-                if ($stmtProduction->execute()) {
-                	
-                    echo '<script>
-                    		Check_Permissions("p_view",openMenuGranted,"dbc_receiving","DBC Receiving");
-                    		app_alert("System Message", "Received item '.$itemdescription.'", "success");
-                    	</script>';
-                    	
-                } else {
-                    echo '<script>app_alert("System Message", "Error updating status in dbc_dbc_production", "error");</script>';
-                }
-                $stmtProduction->close();
-            } else {
-                echo '<script>app_alert("System Message", "Error preparing update query for dbc_dbc_production", "error");</script>';
-            }
-        } else {
-            echo '<script>app_alert("System Message", "Error updating item in dbc_inventory_stock", "error");</script>';
-        }
-        $stmtStock->close();
-    } else {
-        echo '<script>app_alert("System Message", "Error preparing update query for dbc_inventory_stock", "error");</script>';
-    }
-}
 
 
 
@@ -1700,12 +1653,12 @@ if($mode == 'saveinvsetup')
 	$phycount = $_POST['phycount'];
 	$uom = $_POST['uom'];
 
-	$query = "SELECT * FROM wms_inventory_pcount WHERE trans_date='$transdate' AND item_code='$itemcode'";
+	$query = "SELECT * FROM dbc_inventory_pcount WHERE trans_date='$transdate' AND item_code='$itemcode'";
 	$results = $db->query($query);			
     if($results->num_rows > 0)
     {
     	$update = "`item_code`='$itemcode',`category`='$category',`item_description`='$itemname',`uom`='$uom',`trans_date`='$transdate',`p_count`='$phycount'";
-    	$queryDataUpdate = "UPDATE wms_inventory_pcount SET $update WHERE trans_date='$transdate' AND item_code='$itemcode'";
+    	$queryDataUpdate = "UPDATE dbc_inventory_pcount SET $update WHERE trans_date='$transdate' AND item_code='$itemcode'";
 		if ($db->query($queryDataUpdate) === TRUE)
 		{
 			executeInventory($itemcode,$category,$itemname,$uom,$function,$phycount,$date_time,$date,$app_user,$db);
@@ -1715,7 +1668,7 @@ if($mode == 'saveinvsetup')
     } else {
     	$column = "`item_code`,`category`,`item_description`,`uom`,`trans_date`,`p_count`";	
 		$insert = "'$itemcode','$category','$itemname','$uom','$transdate','$phycount'";
-		$queryInsert = "INSERT INTO wms_inventory_pcount ($column) VALUES ($insert)";
+		$queryInsert = "INSERT INTO dbc_inventory_pcount ($column) VALUES ($insert)";
 		if ($db->query($queryInsert) === TRUE)
 		{
 			executeInventory($itemcode,$category,$itemname,$uom,$function,$phycount,$date_time,$date,$app_user,$db);
@@ -1731,7 +1684,7 @@ function executeInventory($itemcode,$category,$itemname,$uom,$function,$phycount
 {
 	$supplier_id = $function->GetItemInfo('supplier_id',$itemcode,$db);
 	
-	$sqlQueryStk = "SELECT * FROM wms_inventory_stock WHERE item_code='$itemcode'";
+	$sqlQueryStk = "SELECT * FROM dbc_inventory_stock WHERE item_code='$itemcode'";
     $stkResults = mysqli_query($db, $sqlQueryStk);
     if ($stkResults->num_rows > 0)
     {
@@ -1742,7 +1695,7 @@ function executeInventory($itemcode,$category,$itemname,$uom,$function,$phycount
 		}
 		if($before_pcount_date == $date)
 		{	
-			$queryDataUpdate = "UPDATE wms_inventory_stock SET stock_before_pcount_date='$date', stock_in_hand='$phycount', date_updated='$date_time',updated_by='$app_user' WHERE item_code='$itemcode'";
+			$queryDataUpdate = "UPDATE dbc_inventory_stock SET stock_before_pcount_date='$date', stock_in_hand='$phycount', date_updated='$date_time',updated_by='$app_user' WHERE item_code='$itemcode'";
 	        if ($db->query($queryDataUpdate) === TRUE) {
 	        } else {
 	            echo $db->error;
@@ -1750,7 +1703,7 @@ function executeInventory($itemcode,$category,$itemname,$uom,$function,$phycount
 		}
 		else 
 		{
-			$queryDataUpdate = "UPDATE wms_inventory_stock SET stock_before_pcount_date='$date',stock_before_pcount='$value_before_pcount', stock_in_hand='$phycount', date_updated='$date_time',updated_by='$app_user' WHERE item_code='$itemcode'";
+			$queryDataUpdate = "UPDATE dbc_inventory_stock SET stock_before_pcount_date='$date',stock_before_pcount='$value_before_pcount', stock_in_hand='$phycount', date_updated='$date_time',updated_by='$app_user' WHERE item_code='$itemcode'";
 	        if ($db->query($queryDataUpdate) === TRUE) {
 	        } else {
 	            echo $db->error;
@@ -1761,7 +1714,7 @@ function executeInventory($itemcode,$category,$itemname,$uom,$function,$phycount
     {
 		$column = "supplier_id,item_code,category,item_description,stock_before_pcount_date,stock_in_hand,uom,date_updated,updated_by";
         $insert = "'$supplier_id','$itemcode','$category','$itemname','$date','$phycount','$uom','$date_time','$app_user'";
-        $queryInsert = "INSERT INTO wms_inventory_stock ($column) VALUES ($insert)";
+        $queryInsert = "INSERT INTO dbc_inventory_stock ($column) VALUES ($insert)";
         if ($db->query($queryInsert) === TRUE) {
         } else {
             echo $db->error;
@@ -2232,7 +2185,7 @@ if($mode == 'recevingstocks')
 	} else {
 		$q = "WHERE active=1";
 	}
-	$sqlQuery = "SELECT * FROM dbc_itemlist $q";
+	$sqlQuery = "SELECT * FROM wms_itemlist $q";
 	$results = mysqli_query($db, $sqlQuery);    
 	echo '<ul class="searchlist">';
     if ( $results->num_rows > 0 ) 
@@ -2264,7 +2217,7 @@ if($mode == 'transfersearch')
 	} else {
 		$q = "WHERE active=1";
 	}
-	$sqlQuery = "SELECT * FROM dbc_itemlist $q LIMIT 100";
+	$sqlQuery = "SELECT * FROM wms_itemlist $q LIMIT 100";
 	$results = mysqli_query($db, $sqlQuery);    
 	echo '<ul class="searchlist">';
     if ( $results->num_rows > 0 ) 

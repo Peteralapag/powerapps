@@ -101,7 +101,7 @@ $trans_date = $year."-".$month."-".$day;
 	</thead>
 <?php
 	$maxLength = 20;	
-	$queryItems = "SELECT * FROM dbc_itemlist WHERE category='RAWMATS' AND active=1";
+	$queryItems = "SELECT * FROM wms_itemlist WHERE category='RAWMATS' AND active=1";
 	$resultsItems = $db->query($queryItems);			
 	$variance_amount_total=0;
 	$shortages_total=0;

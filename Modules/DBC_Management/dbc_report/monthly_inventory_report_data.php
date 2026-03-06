@@ -115,7 +115,7 @@ if ($stmt) {
 
 // 6) Preload items list (with unit_price, desc, uom)
 $items = []; // keyed by item_code
-$sql = "SELECT item_code, item_description, uom, unit_price FROM dbc_itemlist";
+$sql = "SELECT item_code, item_description, uom, unit_price FROM wms_itemlist";
 $res = $db->query($sql);
 if ($res) {
     while ($row = $res->fetch_assoc()) {

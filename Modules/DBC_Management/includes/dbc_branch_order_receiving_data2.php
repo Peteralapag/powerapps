@@ -115,7 +115,7 @@ if (!empty($duplicates)) {
             $dataMap[$item][$branch] = $qty;
         }
 
-        $items = mysqli_query($db, "SELECT * FROM dbc_itemlist WHERE active = 1 ORDER BY ordered ASC");
+        $items = mysqli_query($db, "SELECT * FROM wms_itemlist WHERE active = 1 ORDER BY ordered ASC");
         $i = 1;
         $totalPerBranch = array_fill_keys($branches, 0);
 
