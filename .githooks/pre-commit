@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+PATTERN="(sender_password[[:space:]]*=[[:space:]]*['\"][^'\"]+['\"])|(SMTP_EMAIL_PASSWORD[[:space:]]*=[[:space:]]*['\"][^'\"]+['\"])|((api[_-]?key|secret|access[_-]?token|auth[_-]?token)[[:space:]]*[:=][[:space:]]*['\"][^'\"]{8,}['\"])|(AKIA[0-9A-Z]{16})|(-----BEGIN (RSA|EC|DSA|OPENSSH|PGP) PRIVATE KEY-----)|(hnfbbtjohkioygct)"
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if [ -z "$STAGED_FILES" ]; then
+  exit 0
+fi
+
+BLOCKED=0
+while IFS= read -r file; do
+  [ -z "$file" ] && continue
+
+  case "$file" in
+    .githooks/*|vendor/*|Plugins/*/vendor/*|Ratchet-0.4.4/*)
+      continue
+      ;;
+  esac
+
+  if git show ":$file" | grep -E -n "$PATTERN" >/dev/null 2>&1; then
+    echo "[pre-commit] Potential secret detected in staged file: $file"
+    echo "[pre-commit] Remove credentials/secrets before committing."
+    BLOCKED=1
+  fi
+done <<< "$STAGED_FILES"
+
+if [ "$BLOCKED" -ne 0 ]; then
+  echo "[pre-commit] Commit blocked to protect secrets."
+  exit 1
+fi
+
+exit 0
