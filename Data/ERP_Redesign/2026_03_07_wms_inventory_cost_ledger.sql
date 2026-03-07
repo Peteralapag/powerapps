@@ -1,0 +1,25 @@
+-- Immutable inventory costing movement log (Goods Receipt and future stock movements)
+CREATE TABLE IF NOT EXISTS wms_inventory_cost_ledger (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    item_code VARCHAR(50) NOT NULL,
+    po_id BIGINT DEFAULT NULL,
+    po_item_id BIGINT DEFAULT NULL,
+    receipt_id BIGINT DEFAULT NULL,
+    receipt_no VARCHAR(50) DEFAULT NULL,
+    transaction_type VARCHAR(20) NOT NULL,
+    qty_in DECIMAL(18,4) NOT NULL DEFAULT 0.0000,
+    unit_cost DECIMAL(18,4) NOT NULL DEFAULT 0.0000,
+    amount_in DECIMAL(18,4) NOT NULL DEFAULT 0.0000,
+    stock_before DECIMAL(18,4) NOT NULL DEFAULT 0.0000,
+    stock_after DECIMAL(18,4) NOT NULL DEFAULT 0.0000,
+    moving_avg_before DECIMAL(18,4) NOT NULL DEFAULT 0.0000,
+    moving_avg_after DECIMAL(18,4) NOT NULL DEFAULT 0.0000,
+    remarks VARCHAR(255) DEFAULT NULL,
+    created_by VARCHAR(100) DEFAULT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_wicl_item_code (item_code),
+    KEY idx_wicl_po_id (po_id),
+    KEY idx_wicl_receipt_id (receipt_id),
+    KEY idx_wicl_created_at (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
